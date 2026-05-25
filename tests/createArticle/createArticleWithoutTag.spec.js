@@ -3,17 +3,14 @@ import { SignUpPage } from '../../src/pages/SignUpPage';
 import { HomePage } from '../../src/pages/HomePage';
 import { CreateArticlePage } from '../../src/pages/CreateArticlePage';
 import { faker } from '@faker-js/faker';
-import { ArticlePage } from '../../src/pages/ArticlePage';
 
 let homePage;
 let createArticlePage;
-let articlePage;
 
 test.beforeEach(async ({ page }) => {
   const signUpPage = new SignUpPage(page);
   homePage = new HomePage(page);
   createArticlePage = new CreateArticlePage(page);
-  articlePage = new ArticlePage(page);
 
   const user = {
     username: `${faker.person.firstName()}_${faker.person.lastName()}`,
@@ -29,7 +26,7 @@ test.beforeEach(async ({ page }) => {
   await homePage.assertYourFeedTabIsVisible();
 });
 
-test('Create an article with required and optional fields', async () => {
+test('Create an article without article tag', async () => {
   const articleData = {
     articleTitle: faker.lorem.sentence(),
     whatsThisArticleAbout: faker.lorem.sentence(2),
@@ -48,5 +45,7 @@ test('Create an article with required and optional fields', async () => {
 
   await createArticlePage.clickPublishArticleButton();
 
-  await articlePage.assertArticlePageIsVisible(articleData.articleTitle);
+  await createArticlePage.assertErrorMessageContainsText(
+    `Article tag cannot be empty`,
+  );
 });
